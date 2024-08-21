@@ -6,6 +6,13 @@ pacman:
     - linux-t14s-headers
     - t14s-firmware
     - fastfetch
+    - mesa=1:24.2.0-1
+    - libva-mesa-driver=1:24.2.0-1
+    - mesa-vdpau=1:24.2.0-1
+    - opencl-clover-mesa=1:24.2.0-1
+    - vulkan-mesa-layers=1:24.2.0-1
+    - vulkan-swrast=1:24.2.0-1
+    - vulkan-freedreno=1:24.2.0-1
 +also:
   - os/archlinuxarm
   - packages/openssh
