@@ -1,0 +1,24 @@
+name: Snapdragon X1E Laptops
+arch: aarch64
+pacman:
+  install:
+    - linux-x1e
+    - linux-x1e-headers
+    - x1e-firmware
+    - fastfetch
+    - mesa
+    - opencl-clover-mesa
+    - vulkan-mesa-layers
+    - vulkan-swrast
+    - vulkan-freedreno
++also:
+  - os/archlinuxarm
+  - packages/openssh
+  - packages/network-manager
+  - packages/systemd-networkd
+  - packages/editor
+  - packages/bluez
+  - repo/linux-x1e
+  - shell/bash
+  - desktop/plasma
+  - common/pacman-init

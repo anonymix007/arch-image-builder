@@ -1,0 +1,9 @@
+pacman:
+  repo:
+  - name: linux-x1e
+    priority: 200
+    server: https://github.com/anonymix007/x1e-alarm/releases/download/packages
+    publickey: https://raw.githubusercontent.com/anonymix007/x1e-alarm/master/x1e-keyring/x1e.gpg
+    keyid: EEBB4E103131C718FA853444C40DDC98C2007FB5
+  install:
+  - linux-x1e/x1e-keyring
