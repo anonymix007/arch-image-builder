@@ -1,0 +1,9 @@
+pacman:
+  repo:
+  - name: linux-t14s
+    priority: 200
+    server: https://github.com/anonymix007/t14s-alarm/releases/download/packages
+    publickey: https://raw.githubusercontent.com/anonymix007/t14s-alarm/master/t14s-keyring/t14s.gpg
+    keyid: EEBB4E103131C718FA853444C40DDC98C2007FB5
+  install:
+  - linux-t14s/t14s-keyring

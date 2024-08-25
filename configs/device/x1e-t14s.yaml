@@ -1,0 +1,19 @@
+name: ThinkPad T14s Gen 6 (Snapdragon)
+arch: aarch64
+pacman:
+  install:
+    - linux-t14s
+    - linux-t14s-headers
+    - t14s-firmware
+    - fastfetch
++also:
+  - os/archlinuxarm
+  - packages/openssh
+  - packages/network-manager
+  - packages/systemd-networkd
+  - packages/editor
+  - packages/bluez
+  - repo/linux-t14s
+  - shell/bash
+  - desktop/plasma
+  - common/pacman-init

@@ -1,0 +1,66 @@
+name: ThinkPad T14s Gen 6 (Snapdragon) Dual Boot
+target: x1e-t14s
+arch: aarch64
+pacman:
+  install:
+    - grub
+    - efibootmgr
+image:
+  - type: disk
+    output: disk.img
+    layout: gpt
+    size: 10GiB
+    sector: 512
+    partitions:
+      - type: filesystem
+        ptype: efi
+        pname: esp
+        size: 200MiB
+        fsname: ESP
+        fstype: fat32
+        mount: /boot/efi
+        fstab:
+          flags: rw,noatime,utf8,errors=remount-ro
+      - type: filesystem
+        ptype: linux-root-arm64
+        pname: linux
+        fsname: ArchLinux
+        fstype: ext4
+        mount: /
+        grow: yes
+        fstab:
+          boot: yes
+          flags: rw,noatime,discard
+fstab:
+  dev: partlabel
+kernel:
+  kernel: /boot/vmlinuz-linux
+  initramfs: /boot/initramfs-linux-t14s.img
+  cmdline:
+    - module_blacklist=qcom_edac,qcom_q6v5_pas efi=novamap pd_ignore_unused clk_ignore_unused fw_devlink=off cma=128M
+grub:
+  path: /boot/grub
+  targets:
+    - arm64-efi
+bootloader:
+  timeout: 3
+  method:
+    - grub
+  items:
+    - type: linux
+      default: yes
+      name: Arch Linux
+      path: /
+      devicetree: /boot/x1e78100-lenovo-thinkpad-t14s.dtb
+      kernel: ${kernel.kernel}
+      initramfs: ${kernel.initramfs}
+      cmdline: ${@kernel.cmdline} ro loglevel=3
+    - type: linux
+      name: Arch Linux Fallback
+      path: /
+      devicetree: /boot/x1e78100-lenovo-thinkpad-t14s.dtb
+      kernel: ${kernel.kernel}
+      initramfs: /boot/initramfs-linux-t14s.img
+      cmdline: ${@kernel.cmdline} rw loglevel=7
++also:
+  - device/x1e-t14s
