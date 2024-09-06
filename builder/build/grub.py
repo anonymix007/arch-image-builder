@@ -12,7 +12,7 @@ log = getLogger(__name__)
 blkid = Blkid()
 modules = [
 	"part_msdos", "part_gpt", "part_apple", "ext2", "fat", "ntfs", "sleep",
-	"ufs1", "ufs2", "cpio", "sleep", "search", "search_fs_file", "minicmd", 
+	"ufs1", "ufs2", "cpio", "sleep", "search", "search_fs_file", "minicmd",
 	"search_fs_uuid", "search_label", "reboot", "halt", "gzio", "serial",
 	"boot", "file", "f2fs", "iso9660", "hfs", "hfsplus", "zfs", "minix",
 	"memdisk", "sfs", "lvm", "http", "tftp", "udf", "xfs", "date", "echo",
@@ -68,27 +68,18 @@ def gen_menuentry(ctx: ArchBuilderContext, cfg: dict) -> str:
 	"""
 	ret = ""
 
+	entrytype = cfg["type"] if "type" in cfg else "linux"
+
 	# menuentry name (default to Linux)
 	name = cfg["name"] if "name" in cfg else "Linux"
-
-	# kernel image path
-	kernel = get_prop(ctx, "kernel", cfg, True)
-
-	# initramfs image path (supports multiples)
-	initramfs = get_prop(ctx, "initramfs", cfg, True, True)
-
-	# device tree blob path (supports multiples)
-	devicetree = get_prop(ctx, "devicetree", cfg, True, True)
-
-	# kernel command line
-	cmdline = get_prop(ctx, "cmdline", cfg, False, True)
 
 	# the folder to place these files
 	path = get_prop(ctx, "path", cfg, False, False)
 
-	if kernel is None: raise ArchBuilderConfigError("no kernel for grub")
-	if cmdline is None: cmdline = ""
 	ret += f"menuentry '{name}' {{\n"
+
+	if entrytype == "chain":
+		ret += "\tinsmod chain\n"
 
 	# if path set: load filesystem module and search to set root
 	if path:
@@ -109,23 +100,52 @@ def gen_menuentry(ctx: ArchBuilderContext, cfg: dict) -> str:
 		ret += "\tinsmod %s\n" % fstype_to_mod(fs[0].fstype)
 		ret += f"\tsearch --no-floppy --fs-uuid --set=root {uuid}\n"
 
-	# add device tree blob field
-	if devicetree:
-		ret += "\techo 'Loading Device Tree...'\n"
-		ret += f"\tdevicetree {devicetree}\n"
+	if entrytype == "linux":
+		# kernel image path
+		kernel = get_prop(ctx, "kernel", cfg, True)
 
-	# add kernel path field and kernel command line
-	ret += "\techo 'Loading Kernel...'\n"
-	ret += f"\tlinux {kernel} {cmdline}\n"
+		# initramfs image path (supports multiples)
+		initramfs = get_prop(ctx, "initramfs", cfg, True, True)
 
-	# add initramfs field
-	if initramfs:
-		ret += "\techo 'Loading Initramfs...'\n"
-		ret += f"\tinitrd {initramfs}\n"
+		# device tree blob path (supports multiples)
+		devicetree = get_prop(ctx, "devicetree", cfg, True, True)
 
-	# boot into linux (not add 'boot' command, its imply by menuentry)
-	ret += "\techo 'Booting...'\n"
-	ret += f"}}\n"
+		# kernel command line
+		cmdline = get_prop(ctx, "cmdline", cfg, False, True)
+
+		if kernel is None: raise ArchBuilderConfigError("no kernel for grub")
+		if cmdline is None: cmdline = ""
+
+		# add device tree blob field
+		if devicetree:
+			ret += "\techo 'Loading Device Tree...'\n"
+			ret += f"\tdevicetree {devicetree}\n"
+
+		# add kernel path field and kernel command line
+		ret += "\techo 'Loading Kernel...'\n"
+		ret += f"\tlinux {kernel} {cmdline}\n"
+
+		# add initramfs field
+		if initramfs:
+			ret += "\techo 'Loading Initramfs...'\n"
+			ret += f"\tinitrd {initramfs}\n"
+
+		# boot into linux (not add 'boot' command, its imply by menuentry)
+		ret += "\techo 'Booting...'\n"
+		ret += f"}}\n"
+	elif entrytype == "chain":
+		# chainloader path
+		loader = get_prop(ctx, "loader", cfg, False, True)
+
+		if loader is None: raise ArchBuilderConfigError("no chainloader for grub")
+
+		ret += "\techo 'Chainloading ...'\n"
+		ret += f"\tchainloader {loader}\n"
+
+		# boot into chain loader (not add 'boot' command, its imply by menuentry)
+		ret += "\techo 'Booting...'\n"
+		ret += f"}}\n"
+
 	return ret
 
 
