@@ -22,3 +22,8 @@ pacman:
   - shell/bash
   - desktop/plasma
   - common/pacman-init
+filesystem:
+  files:
+  - path: /etc/kernel/cmdline
+    content: |
+      module_blacklist=qcom_edac,qcom_q6v5_pas efi=novamap pd_ignore_unused clk_ignore_unused fw_devlink=off cma=128M rootwait root=PARTLABEL=linux rootfstype=ext4 rootflags=noatime,discard rw loglevel=7

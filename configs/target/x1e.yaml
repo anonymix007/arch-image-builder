@@ -5,6 +5,7 @@ pacman:
   install:
     - grub
     - efibootmgr
+    - x1e-uki
 image:
   - type: disk
     output: disk.img
@@ -47,8 +48,13 @@ bootloader:
   method:
     - grub
   items:
-    - type: linux
+    - type: chain
       default: yes
+      name: Arch Linux (X1E DTB Autoselection UKI)
+      path: /
+      loader: /boot/linux-x1e.efi
+    - type: linux
+      default: no
       name: Arch Linux (ThinkPad T14s Gen 6)
       path: /
       devicetree: /boot/x1e78100-lenovo-thinkpad-t14s.dtb
