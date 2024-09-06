@@ -1,0 +1,20 @@
+# EndeavourOS ARM Installer for X1E
+pacman:
+  install:
+  - mkinitcpio
+  - arch-install-scripts
+  - endeavouros-theming
+  - eos-apps-info
+  - eos-hooks
+  - eos-log-tool
+  - eos-plasma-sddm-config
+  - eos-quickstart
+  - eos-rankmirrors
+  - eos-update-notifier
+  - arc-gtk-theme-eos
+  - eos-apps-info
+  - eos-bash-shared
+  - eos-lightdm-slick-theme
+  - eos-settings-plasma
+  - glances
+  - hwdetect
